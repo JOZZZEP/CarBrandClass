@@ -1,17 +1,17 @@
 from fastapi import FastAPI, Request
-from code import predict_car_brand
 import pickle
 import os
 import requests
-
+#For docker change to app.code
+from app.code import predict_car_brand
 app = FastAPI()
 
 #For local
-model = pickle.load(open(f'D:\Coding\Leaning\Ai\CarBrandClass\model\carmodel.pkl', 'rb'))
+# model = pickle.load(open(f'D:\Coding\Leaning\Ai\CarBrandClass\model\carmodel.pkl', 'rb'))
 #For docker
-# model = pickle.load(open(os.getcwd()+r'model\carmodel.pkl', 'rb'))
+model = pickle.load(open(f'model/carmodel.pkl', 'rb'))
 
-endpoint = "http://localhost:5555/api/gethog"
+endpoint = "http://172.17.0.2:80/api/gethog"
 
 @app.post("/api/carbrand")
 async def read_str(data : Request):
