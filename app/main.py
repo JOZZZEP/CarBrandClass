@@ -9,7 +9,7 @@ app = FastAPI()
 #For local
 # model = pickle.load(open(f'D:\Coding\Leaning\Ai\CarBrandClass\model\carmodel.pkl', 'rb'))
 #For docker
-model = pickle.load(open(f'model/carmodel.pkl', 'rb'))
+model = pickle.load(open(f'model/carmodel_xgb.pkl', 'rb'))
 
 endpoint = "http://172.17.0.2:80/api/gethog"
 
