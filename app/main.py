@@ -1,10 +1,17 @@
 from fastapi import FastAPI, Request
 import pickle
-import os
+from fastapi.middleware.cors import CORSMiddleware
 import requests
 #For docker change to app.code
 from app.code import predict_car_brand
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],   
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 #For local
 # model = pickle.load(open(f'D:\Coding\Leaning\Ai\CarBrandClass\model\carmodel.pkl', 'rb'))

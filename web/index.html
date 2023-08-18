@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+
+    <title>CAR PREDICTION</title>
+</head>
+
+<body>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="row">
+            <div class="col-12">
+                <div class="card" style="width: 50rem;">
+                    <div class="ratio ratio-4x3">
+                        <img class="card-img-top" id="img-preview"
+                            src="https://static.vecteezy.com/system/resources/previews/005/576/332/original/car-icon-car-icon-car-icon-simple-sign-free-vector.jpg">
+                    </div>
+                    <div class="card-body">
+                        <div class="row m-2 mt-2 ms-4">
+                            <h2 id="text-result"></h2>
+                        </div>
+                        <div class="row m-2 mt-2">
+                            <div class="col d-flex justify-content-start">
+                                <input type="file" id="img" class="btn btn-success" accept="image/*">
+                            </div>
+                            <div class="col d-flex justify-content-end">
+                                <button type="button" id="predict-btn" class="btn btn-primary">PREDICT</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const imageInput = document.getElementById('img');
+        const predictBtn = document.getElementById('predict-btn');
+        const imgPreview = document.getElementById('img-preview');
+        const textResult = document.getElementById('text-result');
+
+        if (imageInput) {
+            imageInput.addEventListener('change', (event) => {
+                const selectedFile = imageInput.files[0];
+                if (selectedFile) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(selectedFile);
+                    reader.onload = () => {
+                        imgPreview.src = reader.result;
+                        textResult.style.opacity="0%"
+                    };
+                }
+            })
+        }
+        predictBtn.addEventListener('click', (event) => {
+            const selectedFile = imageInput.files[0];
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onload = () => {
+                    imgPreview.src = reader.result;
+                    const base64String = reader.result;
+                    console.log(base64String);
+                    fetchPrediction(base64String);
+                };
+            }
+            else {
+                console.log('Image input element not found.');
+            }
+        });
+
+
+        function fetchPrediction(base64Image) {
+            fetch('http://localhost/api/carbrand', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "item_str": base64Image })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    textResult.style.opacity="100%"
+                    textResult.textContent = data["Brand"];
+                    console.log('Prediction result:', data);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+    });
+</script>
+
+</html>
